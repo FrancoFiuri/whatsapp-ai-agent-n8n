@@ -1,0 +1,2274 @@
+{
+  "name": "Bot KyP",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Mensaje: {{ $('mensajeUsuario').item.json.response }}",
+        "options": {
+          "systemMessage": "=# Rol\nActuás como un asistente virtual especializado en atención al cliente para una empresa B2B.El sistema está diseñado como una demostración de automatización de atención al cliente mediante WhatsApp. Estás entrenado específicamente para manejar conversaciones privadas vía WhatsApp, manteniendo una comunicación cálida, clara y eficaz. Tenés experiencia en comercio B2B y comprendés las necesidades de los clientes mayoristas del rubro indumentaria.\n\n# Tarea\nAtender consultas de clientes mayoristas a través de WhatsApp, brindando información precisa sobre productos, stock, envíos, precios, formas de pago y procesos de compra.\n\n# Detalles Específicos\n- Usá modismos rioplatenses de forma moderada (ej. “vos”, “dale”, “tenés”, “podés”, “acá”, “allá”).\n- Evitá completamente el uso de expresiones de español neutro como \"aquí\", \"allí\", \"tú\".\n- Insertá emojis como 📦✨🛍️👍💸✅ para transmitir calidez, pero sin sobrecargar los mensajes.\n- Adoptá un tono cordial y resolutivo, evitando frases motivacionales o innecesariamente formales.\n- No repitas frases genéricas como “Estoy acá para ayudarte” en cada mensaje. Usalas solo si el contexto lo requiere y no más de una vez por conversación.\n- SIEMPRE busca responder dudas o consultas utilizando el documento \"Preguntas Frecuentes\" y si no encontras respuesta dentro de ese documento ESCRIBI: \"Dejame verlo y ya te respondo.\"\n- Si el usuario transmite que no posee tienda de ropa EXPLICALE AMABLEMENTE que no se puede vender a particulares y utiliza la informacion del documento \"Preguntas Frecuentes\" para responderle adecuadamente, NO digas que vendemos a comercios registrados, SI decile que vendemos a emprendedoras o mayoristas.\n- NO respondas consultas que no sean sobre el negocio, si te consultan por otro tema que no se refiera al mismo responde \"No puedo responder eso, te pido disculpas. Un asesor se estará comunicando más tarde.\"\n- NO INVENTES INFORMACION\n- NO PASES INFORMACION SOBRE STOCK DE PRODUCTOS, responde SIEMPRE \"Dejame verlo y ya te respondo.\"\n- Podes pasarle la ubicacion del local diciendo: \"💬 Estamos en San Rafael, Mendoza. 📍\"\n- Si el usuario te solicita informacion o dice la palabra \"info\", enviale las condiciones de compra obtenido del archivo \"Preguntas Frecuentes\"\n- Respondé cada una de las preguntas del cliente en el orden en que fueron enviadas, usando viñetas o saltos de línea para mayor claridad.\n- Mantené tus respuestas breves pero completas, con un enfoque práctico y humano.\n- Si es un usuario nuevo vas a comparar {{ $('Code1').item.json.processed_wa_id }} con la columna \"Numero\" del archivo sheet \"GOOGLE_SHEET_WELCOME_NAME\", si el numero NO esta ESCRIBI \"Bienvenida somos Mayorista KyP\" si esta contesta su consulta.\n\n# Contexto\nEl asistente forma parte de un sistema de atención automatizada para una tienda mayorista de ropa con base en Argentina, que vende exclusivamente a comercios registrados. Los clientes acceden a través de WhatsApp para hacer consultas sobre condiciones de compra, informacion sobre el negocio y horarios de atencion. El objetivo del bot es agilizar la atención y mantener una comunicación fluida sin perder calidez humana.\n\n# Ejemplos\n\n**Consulta:**\n\"Hola, ¿Tienen remeras lisas?¿Cuáles son los talles?\"\n\n**Respuesta:**  \n- Sí, tenemos remeras lisas en varios colores y modelos.  \n- Los talles van del S al XXL.  \nSi querés, te paso el catálogo actualizado 📦\"\n\n---\n\n\n# Notas\n- No uses estructuras repetitivas ni frases tipo call center.\n- Adaptá el tono de los mensajes según la cantidad de interacción previa: más cercano si hay confianza, más neutro si es el primer contacto.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        280
+      ],
+      "id": "457471db-f71f-427c-b2c3-378751d1ecf0",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2200,
+        520
+      ],
+      "id": "",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": ""
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "GOOGLE_SHEET_NAME",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Registro",
+          "cachedResultUrl": ""
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Numero",
+              "lookupValue": "={{ $('Code1').item.json.processed_wa_id_2 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1740,
+        -220
+      ],
+      "id": "",
+      "name": "ContactosBot",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4aee98b9-5c8c-4589-93fb-c650c150b2ae",
+              "name": "bienvenida",
+              "value": true,
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3420,
+        100
+      ],
+      "id": "aa4efc84-e10a-49b2-9b8e-29350f5433bc",
+      "name": "Bienvenida"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "GOOGLE_SHEET_WELCOME_NAME",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1628677245,
+          "mode": "list",
+          "cachedResultName": "GOOGLE_SHEET_WELCOME_NAME",
+          "cachedResultUrl": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Numero": "={{ $('Code1').item.json.processed_wa_id }}",
+            "GOOGLE_SHEET_WELCOME_NAME": "true"
+          },
+          "matchingColumns": [
+            "Numero"
+          ],
+          "schema": [
+            {
+              "id": "Numero",
+              "displayName": "Numero",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "GOOGLE_SHEET_WELCOME_NAME",
+              "displayName": "GOOGLE_SHEET_WELCOME_NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        3020,
+        100
+      ],
+      "id": "",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9593ced9-aa90-4c63-9e0e-dc36a3966344",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "somos mayorista KyP",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "82412516-559e-4e3f-b5a6-b9490ede000b",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "Bienvenida",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2780,
+        280
+      ],
+      "id": "5d9730e5-b0e7-42e3-a913-5905615131c9",
+      "name": "Filtro Mensaje Bienvenida"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a926ca21-3af0-43bf-8147-3f7a7fdbad8b",
+              "leftValue": "={{ $json.Numero || '' }}",
+              "rightValue": "=Buenas",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "e5d3a57c-42be-40ca-bd4f-3b23feacff06",
+              "leftValue": "={{ $json.result|| ''}}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2220,
+        -220
+      ],
+      "id": "91b8584c-6f2f-472a-87fe-1d0d9d4c84bc",
+      "name": "Filtro Clientes"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2500,
+        -480
+      ],
+      "id": "",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": ""
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Mensaje: {{ $('mensajeUsuario').item.json.response }}",
+        "options": {
+          "systemMessage": "=# Rol\nActuás como un asistente virtual especializado en atención al cliente para una empresa B2B.El sistema está diseñado como una demostración de automatización de atención al cliente mediante WhatsApp. Estás entrenado específicamente para manejar conversaciones privadas vía WhatsApp de clientes registrados, manteniendo una comunicación cálida, clara y eficaz. Tenés experiencia en comercio y comprendés las necesidades de los clientes mayoristas del rubro indumentaria.\n\n# Tarea\nAtender consultas de clientes mayoristas a través de WhatsApp, brindando información precisa sobre productos, stock, envíos, precios, formas de pago y procesos de compra.\n\n# Detalles Específicos\n- Usá modismos rioplatenses de forma moderada (ej. “vos”, “dale”, “tenés”, “podés”, “acá”, “allá”).\n- Evitá completamente el uso de expresiones de español neutro como \"aquí\", \"allí\", \"tú\".\n- Insertá emojis como 📦✨🛍️👍💸✅ para transmitir calidez, pero sin sobrecargar los mensajes.\n- Adoptá un tono cordial y resolutivo, evitando frases motivacionales o innecesariamente formales.\n- No repitas frases genéricas como “Estoy acá para ayudarte” en cada mensaje. Usalas solo si el contexto lo requiere y no más de una vez por conversación.\n- Respondé cada una de las preguntas del cliente en el orden en que fueron enviadas, usando viñetas o saltos de línea para mayor claridad.\n- NO respondas otra consulta que no sea referida al negocio, si te consultan por otro tema que no se refiera al mismo responde \"No puedo responder eso, te pido disculpas. Un asesor se estará comunicando más tarde.\"\n- NO INVENTES INFORMACION\n- NO PASES INFORMACION SOBRE STOCK DE PRODUCTOS, responde SIEMPRE \"Dejame verlo y ya te respondo.\"\n- Mantené tus respuestas breves pero completas, con un enfoque práctico y humano.\n- NO PASES INFORMACION SOBRE PRECIOS DE PRODUCTOS, responde SIEMPRE \"Te dejo el link del catálogo!\n👉 [LINK AL CATÁLOGO]\nDesde ahí armás tu pedido y lo gestionamos por WhatsApp.\"\n- Si el cliente solicita informacion sobre su estado de cuenta, enviales el link que se encuentra dentro del archivo \"GOOGLE_SHEET_CLIENTS_NAME\" filtra por numero de telefono comparando {{ $('ContactosBot').item.json.Numero }} con {{ $('mensaje_usuario').item.json.mensaje_usuario_tel }} y luego envia el link que se encuentra en {{ $('ContactosBot').item.json.Link }}\n- UTILIZA como base de conocimientos los documentos configurados en los nodos correspondientes del workflow.\n\n# Contexto\nEl asistente forma parte de un sistema de atención automatizada para una tienda mayorista de ropa con base en Argentina, que vende exclusivamente a comercios registrados. Los clientes acceden a través de WhatsApp para hacer consultas sobre disponibilidad de stock, condiciones de compra, y seguimiento de pedidos. El objetivo del bot es agilizar la atención y mantener una comunicación fluida sin perder calidez humana.\n\n# Ejemplos\n\n**Consulta:**\n\"¿Cuáles son los horarios de atención?\"\n\n**Respuesta:**\n\"- Por WhatsApp atendemos de lunes a viernes de 9:00 a 13:00 hs y de 18:00 a 21:00 hs.\nPara compras presenciales o retiro de pedidos (con aviso previo), los horarios son:\n•\tLunes: 9:00 a 13:00 y 18:00 a 20:00\n•\tMartes a jueves: 18:00 a 20:00\n•\tViernes: 9:00 a 13:00 y 18:00 a 20:00\n•\tSábados: 9:00 a 13:00\n📲 Coordinamos previamente por mensaje.\"\n\n---\n\n# Notas\n- No uses estructuras repetitivas ni frases tipo call center.\n- Adaptá el tono de los mensajes según la cantidad de interacción previa: más cercano si hay confianza, más neutro si es el primer contacto."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        2560,
+        -680
+      ],
+      "id": "fca492bf-3c9d-4c88-ab9c-f6268b1fe801",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "GOOGLE_SHEET_WELCOME_NAME",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1628677245,
+          "mode": "list",
+          "cachedResultName": "GOOGLE_SHEET_WELCOME_NAME",
+          "cachedResultUrl": ""
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Numero",
+              "lookupValue": "={{ $('mensaje_usuario').item.json.mensaje_usuario_tel }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        2640,
+        520
+      ],
+      "id": "",
+      "name": "GOOGLE_SHEET_WELCOME_NAME",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "=Ultimas 20 conversaciones con el usuario (contexto): {{ $json.pg_map_contexto_20 }}\n\nMensaje actual del usuario, utilizalo para determinar cada categoría:\n{{ $('mensaje_usuario').item.json.mensaje_usuario }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "relevante",
+              "description": "=Eres un agente de filtrado de mensajes para un sistema de clasificación automatizada de WhatsApp. Recibirás como contexto las últimas 20 interacciones entre el cliente y la empresa, y tu tarea es analizar el último mensaje enviado por el usuario dentro de ese contexto y decidir si es relevante para clasificación o no relevante. \n\nUn mensaje relevante si, considerando el contexto previo, aporta cualquier tipo de intención, petición, consulta, queja, compra, solicitud de información, seguimiento, agradecimiento con duda, propuesta, reclamación o cualquier otro contenido que requiera ser procesado o respondido. \nLos mensajes de saludo como \"hola\", \"buenas\", \"buenos dias\", \"buenas tardes\", \"¿estás?\", \"hola, estás ahí?\", \"👋\", \"🙋\" deben considerarse relevantes la primera vez que aparecen o si no han sido repetidos de forma insistente sin aportar información nueva.\nSi estos saludos se han repetido varias veces seguidas sin contenido adicional (por ejemplo, varios \"hola\", \"¿estás?\" o emojis aislados en el mismo historial reciente), deben considerarse no relevantes por tratarse de insistencia vacía.\n\nES RELEVANTE si el usuario responde con comas, EJEMPLO \"me podrian pasar,las condiciones de venta,por favor,gracias\" Ya que se trata de una separacion de mensajes recibidos.\n\nUn mensaje es no relevante si es una confirmación genérica sin aportar intención ni información (ej.: \"ok\", \"si\", \"no\", \"👍\", \"gracias\" si es solo \"gracias\", sin preguntas o dudas añadidas).\n\n⚠️ Evalúa siempre todos los último mensaje en relación al historial completo. Un \"si\", \"ok\" o \"gracias\" pueden ser relevantes si responden a una pregunta anterior o confirman una acción que requiere clasificación. Los saludos solo deben ser considerados no relevantes si se han repetido varias veces sin aportar nueva información.\n\nNo interpretes emociones, solo analiza si la información contenida en el último mensaje, junto al historial previo, requiere ser clasificada o atendida.\n\nFORMATO DE RESPUESTA:\nDevuelve solo \"relevante\" o \"no relevante\".\nNo expliques tu decisión, no añadas ninguna otra palabra.\n\nDeterminalo tanto con el mensaje actual: \"{{ $('mensaje_usuario').item.json.mensaje_usuario }}\" como con los mensajes anteriores que el usuario envió: \"{{ $('mensaje_usuario').item.json.mensaje_usuario }}\""
+            },
+            {
+              "category": "irrelevante",
+              "description": "=Ignorar sistemáticamente cualquier mensaje clasificado como irrelevante, incluyendo pero no limitado a: textos ininteligibles, mensajes incoherentes, insultos, spam, lenguaje ofensivo o provocaciones sin contenido sustantivo.\nNo responder, no reconocer, no procesar."
+            },
+            {
+              "category": "insistencia",
+              "description": "=Eres un agente especializado en detectar casos de insistencia del cliente en un sistema automatizado de atención por WhatsApp. Tu tarea es analizar cada mensaje individual, junto con los últimos 5 mensajes anteriores del mismo cliente (si están disponibles), y decidir si ese cliente está mostrando insistencia.\n\nConsidera como insistencia si:\n\nEl cliente envía mensajes repetidos preguntando por la misma solicitud sin aportar nueva información.\n\nEl cliente presiona o reclama varias veces seguidas sin esperar respuesta (ej: \"¿hay alguien?\", \"responde por favor\", \"estoy esperando\", \"escribí varias veces\", \"me pueden atender?\").\n\nEl cliente envía varias veces frases como \"hola?\", \"me pueden ayudar?\", \"responde alguien?\" en diferentes momentos sin recibir respuesta todavia.\n\nHay repetición de la misma pregunta o petición con distintas palabras, pero el mismo contenido (ej.: \"quiero saber el estado de mi pedido\", \"saben algo del pedido?\", \"pueden decirme algo del pedido?\", \"cuando llega el pedido?\").\n\nNO es insistencia si:\n\nEl cliente aporta información nueva o complementaria en cada mensaje.\n\nEl cliente hace varias preguntas diferentes sobre distintos temas.\n\nEl cliente responde o agradece, pero sin presionar ni reclamar.\n\nHay solo un mensaje, o los mensajes son distantes en el tiempo sin signos de presión.\n\n⚠️ Importante: Para que sea considerado insistente, debe haber presión explícita, repetición sin aporte nuevo o actitud de reclamo por respuesta. No confundas mensajes cortos o amables con insistencia.\n\nDeterminalo tanto con el mensaje actual: \"{{ $('mensaje_usuario').item.json.mensaje_usuario }}\" como con los mensajes anteriores del usuario envió: \"{{ $('mensaje_usuario').item.json.mensaje_usuario }}\""
+            },
+            {
+              "category": "spam",
+              "description": "=# Rol\nActuás como un moderador automático de WhatsApp con inteligencia artificial, capacitado para identificar **mensajes tipo spam** o no deseados.\n\n# Tarea\nFiltrar mensajes **spam**, es decir, que tengan características de promoción externa, enlaces sospechosos, lenguaje automatizado, o mensajes en masa.\n\n# Detalles Específicos\n- Frases promocionales genéricas.\n- Enlaces repetidos o a sitios externos.\n- Uso excesivo de mayúsculas o emojis.\n- Mensajes fuera de contexto del negocio.\n\n# Contexto\nimplementa este filtro para evitar que bots externos, vendedores no deseados o ataques de spam automaticen mensajes al bot.\n\n# Ejemplos\n- Mensaje: \"GANA DINERO YA!!! Visita http://dinero-facil.com\"\n  Clasificación: Spam\n- Mensaje: \"Promoción exclusiva para ti!!! 💸💸💸\"\n  Clasificación: Spam\n- Mensaje: \"¡Regístrate en nuestra página y recibe un iPhone gratis!\"\n  Clasificación: Spam\n\n# Notas\n- Detectá si el mensaje tiene patrones de bots, muchas veces se ve en el estilo de escritura."
+            },
+            {
+              "category": "error",
+              "description": "=# Rol\nSos un sistema inteligente capaz de detectar cuando un mensaje fue enviado **por error**, es decir, que no tiene sentido dentro del contexto actual o parece ser un error de tipeo o equivocación de contacto.\n\n# Tarea\nClasificar como “error” mensajes que no tienen lógica aparente, están completamente fuera de contexto o parecen destinados a otra persona.\n\n# Detalles Específicos\n- Texto incoherente o muy confuso.\n- Mensajes que hacen referencia a personas o situaciones no relacionadas con el servicio.\n- Frases como “perdón, me equivoqué” también aplican.\n\n# Contexto\nEste filtro permite que el bot ignore conversaciones que claramente no fueron intencionadas para este canal.\n\n# Ejemplos\n- Mensaje: \"Mamá ya llegué\"\n  Clasificación: Error\n- Mensaje: \"Te paso el CBU para que me transfieras lo del alquiler\"\n  Clasificación: Error\n- Mensaje: \"Ay perdón, me equivoqué de chat\"\n  Clasificación: Error\n\n# Notas\n- Diferenciá esto del mensaje irrelevante. En este caso, no es que no aporte, sino que **está fuera de lugar**."
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "=Eres un agente experto en filtrado y clasificación automatizada de mensajes para un sistema de atención al cliente de WhatsApp. Tu tarea es analizar cada mensaje recibido por el usuario junto con el contexto de las últimas 20 interacciones (si están disponibles) y clasificarlo simultáneamente en las siguientes categorías:\n\nRelevancia: ¿El mensaje es relevante para clasificación o no relevante?\nSpam: ¿El mensaje es spam o no spam?\nInsistencia: ¿El mensaje indica insistencia por parte del cliente o no?\nError: ¿El mensaje parece contener algún error o confusión del cliente (por ejemplo, mensaje sin sentido, incoherente, vacío o desubicado)?\n\nCriterios para cada categoría:\n\n1. Relevancia (relevante / no relevante):\n\nUn mensaje es relevante si, considerando el contexto previo, aporta cualquier tipo de intención, petición, consulta, queja, compra, solicitud de información, seguimeinto, agradecimiento con duda, propuesta o reclamación.\nLos mensajes de saludo como \"hola\", \"buenas\", \"buenos dias\", \"estas?\" deben considerarse relevantes si es la primera vez que aparecen o si no han sido repetidos de forma insistente sin aportar información nueva.\nSi estos saludos se han repetido varias veces sin contenido adicional, deben considerarse no relevantes por tratarse de insistencia vacía.\nConfirmaciones genéricas sin intención (\"ok\", \"si\", \"no\", \"👍\", \"gracias\" si es solo \"gracias\") son no relevantes, excepto si responden a preguntas o acciones anteriores.\nNO ES IRRELEVANTE si el usuario responde con comas, EJEMPLO \"me podrian pasar,las condiciones de venta, por favor, gracias.\" Ya que se trata de una separacion de mensajes recibidos, en este caso es RELEVANTE.\n\n2.Spam (spam / no spam):\n\nEs spam si el mensaje es publicidad no solicitada, promociones externas, bots automáticos ofreciendo servicios, cadenas virales, sorteos falsos, invesiones tipo \"compra Bitcoins\" o mensajes masivos que posean contenido robotico o de lenguaje automatico.\nEjemplos\n- Mensaje: \"GANA DINERO YA!!! Visita http://dinero-facil.com\"\n  Clasificación: Spam\n- Mensaje: \"Promoción exclusiva para ti!!! 💸💸💸\"\n  Clasificación: Spam\n- Mensaje: \"¡Regístrate en nuestra página y recibe un iPhone gratis!\"\n  Clasificación: Spam\n\n3. Insistencia (insistencia / no insistencia):\n\nConsidera como insistencia si:\nEl cliente envía mensajes repetidos preguntando por la misma solicitud sin aportar nueva información.\nEl cliente presiona o reclama varias veces seguidas sin esperar respuesta (ej: \"¿hay alguien?\", \"responde por favor\", \"estoy esperando\", \"escribí varias veces\", \"me pueden atender?\").\nEl cliente envía varias veces frases como \"hola?\", \"me pueden ayudar?\", \"responde alguien?\" en diferentes momentos sin recibir respuesta todavia.\nHay repetición de la misma pregunta o petición con distintas palabras, pero el mismo contenido (ej.: \"quiero saber el estado de mi pedido\", \"saben algo del pedido?\", \"pueden decirme algo del pedido?\", \"cuando llega el pedido?\").\nNO es insistencia si:\n- El cliente aporta información nueva o complementaria en cada mensaje.\n- El cliente hace varias preguntas diferentes sobre distintos temas.\n- El cliente responde o agradece, pero sin presionar ni reclamar.\n- Hay solo un mensaje, o los mensajes son distantes en el tiempo sin signos de presión.\n\n4. Error (error / no error):\n\nClasificar como “error” mensajes que no tienen lógica aparente, están completamente fuera de contexto o parecen destinados a otra persona.\n# Detalles Específicos\n- Texto incoherente o muy confuso.\n- Mensajes que hacen referencia a personas o situaciones no relacionadas con el servicio.\n- Frases como “perdón, me equivoqué” también aplican.\nEjemplos:\n- Mensaje: \"Mamá ya llegué\"\n  Clasificación: Error\n- Mensaje: \"Te paso el CBU para que me transfieras lo del alquiler\"\n  Clasificación: Error\n- Mensaje: \"Ay perdón, me equivoqué de chat\"\n  Clasificación: Error\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        840,
+        -180
+      ],
+      "id": "ed45bb47-3f8a-4441-8d68-ffa9c5d81c8c",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        840,
+        20
+      ],
+      "id": "",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "",
+          "name": ""
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        -120
+      ],
+      "id": "c3a056e6-8f17-4e4a-9169-3c727e38a1dd",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "amount": 999,
+        "unit": "days"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1280,
+        160
+      ],
+      "id": "93ed54cc-f1d7-4b2a-9ad2-5ae867bedf93",
+      "name": "Bloqueo de Spam (999 dias)",
+      "webhookId": ""
+    },
+    {
+      "parameters": {
+        "errorMessage": "Hubo un error. "
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        320
+      ],
+      "id": "7504d29c-0012-4f33-be6e-794a4a76f0b3",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        20
+      ],
+      "id": "c67def32-d3a6-4b74-b64a-5b47b4043bff",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        160
+      ],
+      "id": "e46b4763-d552-4e36-9e47-78bc6658f9b4",
+      "name": "No Operation, do nothing2"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('mensaje_usuario').item.json.mensaje_usuario_tel }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        2340,
+        520
+      ],
+      "id": "",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        440,
+        -180
+      ],
+      "id": "44f29862-1af3-476d-b93e-f0b9ecaef645",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_chat_histories",
+          "mode": "list",
+          "cachedResultName": "n8n_chat_histories"
+        },
+        "limit": 20,
+        "where": {
+          "values": [
+            {
+              "column": "session_id",
+              "value": "={{ $('Code1').item.json.processed_wa_id }}"
+            }
+          ]
+        },
+        "combineConditions": "OR",
+        "sort": {
+          "values": [
+            {
+              "column": "id",
+              "direction": "DESC"
+            },
+            {
+              "column": "session_id",
+              "direction": "DESC"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        200,
+        -360
+      ],
+      "id": "",
+      "name": "Obtener Historial",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5dd14522-3a57-4548-8ddc-6517a79ce64a",
+              "name": "pg_map_contexto_20",
+              "value": "={{ $json.data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        660,
+        -180
+      ],
+      "id": "bb36e2d1-679e-4fe8-87c7-3b08f3843b84",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ee71dab1-6ddc-4344-b75c-c167e7d6773f",
+              "name": "mensaje_usuario",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "073ceebf-76c6-4ef6-8d83-359c485a4902",
+              "name": "mensaje_usuario_tel",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "de1fe012-019f-41b8-8812-d22b84d567f9",
+              "name": "mensaje_usuario_phone_id",
+              "value": "={{ $json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "0a2a3e51-9440-452f-908d-abb63a002cc7",
+              "name": "mensaje_usuario_nombre",
+              "value": "={{ $json.body.data.pushName }}",
+              "type": "string"
+            },
+            {
+              "id": "06a6212a-bb00-415e-8b23-6912b7f87480",
+              "name": "mensaje_id",
+              "value": "={{ $json.body.data.key.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3700,
+        -180
+      ],
+      "id": "8233601e-141e-47d8-8b3c-7bf022f8cfd3",
+      "name": "mensaje_usuario"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1fc03a7-6c5d-4ee8-803c-62f9495c36c8",
+              "leftValue": "={{ $('Code1').item.json.processed_wa_id_2 }}",
+              "rightValue": "={{ $('ContactosClientes').item.json.Numero }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "42b64eff-ef11-43f3-9107-47ff41b33b09",
+              "leftValue": "={{ $('Code1').item.json.processed_wa_id }}",
+              "rightValue": "={{ $('ContactosNoClientes').item.json.Numero }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        -180
+      ],
+      "id": "cef770e6-baa3-4b50-a428-752272ec0e61",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1820,
+        -180
+      ],
+      "id": "b299abb6-77b2-471a-953e-ead5ef00085c",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "GOOGLE_SHEET_CLIENTS_ID",
+          "mode": "list",
+          "cachedResultName": "GOOGLE_SHEET_CLIENTS_REGISTER_NAME",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Registro",
+          "cachedResultUrl": ""
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Numero",
+              "lookupValue": "={{ $('Code1').item.json.processed_wa_id_2 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -2000,
+        -180
+      ],
+      "id": "",
+      "name": "ContactosClientes",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "GOOGLE_SHEET_NON_CLIENTS_ID",
+          "mode": "list",
+          "cachedResultName": "GOOGLE_SHEET_NON_CLIENTS_NAME",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1807848533,
+          "mode": "list",
+          "cachedResultName": "Registro",
+          "cachedResultUrl": ""
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Numero",
+              "lookupValue": "={{ $json.processed_wa_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -2220,
+        -180
+      ],
+      "id": "",
+      "name": "ContactosNoClientes",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "GOOGLE_SHEET_NON_CLIENTS_ID",
+          "mode": "list",
+          "cachedResultName": "GOOGLE_SHEET_NON_CLIENTS_ID",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1807848533,
+          "mode": "list",
+          "cachedResultName": "Registro",
+          "cachedResultUrl": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Numero": "={{ $('mensaje_usuario').item.json.mensaje_usuario_tel }}",
+            "Nombre": "={{ $('mensaje_usuario').item.json.mensaje_usuario_nombre }}"
+          },
+          "matchingColumns": [
+            "Numero"
+          ],
+          "schema": [
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Numero",
+              "displayName": "Numero",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        3220,
+        100
+      ],
+      "id": "",
+      "name": "Append or update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "GOOGLE_DOCS_FAQ_ID"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        2480,
+        520
+      ],
+      "id": "DEMO_GOOGLE_DOCS_CREDENTIAL",
+      "name": "PreguntasFrecuentes",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('mensaje_usuario').item.json.mensaje_usuario_tel }}",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        2640,
+        -480
+      ],
+      "id": "",
+      "name": "Postgres Chat Memory1",
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## TAREAS DE MANTENIMIENTO \n**1: ACTUALIZACION DIARIA LISTA DE CLIENTES** \n**2: ACTUALIZACION SEMANAL LISTA DE PRECIOS**\n**3: CONTROL SEMANAL DE TOKEN OPENIA**\n**4: CONTROL SEMANAL POSTGRES**",
+        "width": 380
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1860,
+        -1420
+      ],
+      "id": "21923da5-d9ef-41bd-9e4c-607d840c1934",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## POSIBLES IMPLEMENTACIONES \n**- DIAGNOSTICO DE MENSAJES DE USUARIOS**\n**- MENSAJES MASIVOS(PAGOS)**\n**- ENVIAR COMPROBANTES DE PAGO**\n",
+        "width": 460,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        -1420
+      ],
+      "id": "5cbf2c3c-859a-4bf4-b232-5ee7f7f4275d",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "1AxQNf0uRXn_HfSDnr51VSjSx8YUE6cek6R4VHIQOt0c"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        2780,
+        -480
+      ],
+      "id": "DEMO_GOOGLE_DOCS_CREDENTIAL",
+      "name": "PreguntasFrecuentes1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "GOOGLE_SHEET_CLIENTS_ID",
+          "mode": "list",
+          "cachedResultName": "GOOGLE_SHEET_CLIENTS_NAME",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Registro",
+          "cachedResultUrl": ""
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Numero",
+              "lookupValue": "={{ $('mensaje_usuario').item.json.mensaje_usuario_tel }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        2940,
+        -480
+      ],
+      "id": "",
+      "name": "GOOGLE_SHEET_CLIENTS_ID",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## TEMAS A TRATAR \n**- Finalización de conversación con cliente**\n**- Lista de precios**",
+        "width": 400,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        -1420
+      ],
+      "id": "0248700b-a4fd-46a4-b8cf-76b9d4f368dd",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "imageMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "1bdf8a6d-b9a1-4add-a377-ee4dc6e9faf3"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "imagen"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "14cb4def-bfb5-4e73-9b58-b4413d208d4e",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b1612768-2368-4d88-a38b-3adbda48122c",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "documentMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "documento"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b5a5e024-7f0c-4cd4-b6e4-9c43a9c2e34d",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "stickerMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "sticker"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "12bf5e72-90f8-4569-9d1d-84a7488a60d9",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "contact",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "contacto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c31651a8-1c87-4286-ac36-c5925b85c60b",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "location",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ubicacion"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a36fb7b8-c9a0-4db5-9719-ec1aeb58e0c4",
+                    "leftValue": "={{ $('Webhook').item.json.body.data.messageType }}",
+                    "rightValue": "conversation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "texto"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "fallbackOutput": "none"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1640,
+        -260
+      ],
+      "id": "fd688962-25b9-4d49-9d1d-a18a89d725d0",
+      "name": "Switch"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1400,
+        -400
+      ],
+      "id": "d4320279-11c4-4007-9ed6-8ca0051ca97f",
+      "name": "No hacer nada"
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "={{ $('Code1').item.json.processed_wa_id }}",
+        "messageData": "={{ $('mensaje_usuario').item.json.mensaje_usuario }}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1300,
+        -80
+      ],
+      "id": "DEMO_REDIS_CREDENTIAL",
+      "name": "Redis",
+      "credentials": {
+        "redis": {
+          "id": "",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1080,
+        -80
+      ],
+      "id": "b67fb49f-4336-4300-9be0-b828191f0092",
+      "name": "Wait",
+      "webhookId": ""
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "message",
+        "key": "={{ $('Code1').item.json.processed_wa_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -860,
+        -80
+      ],
+      "id": "DEMO_REDIS_CREDENTIAL",
+      "name": "Redis1",
+      "credentials": {
+        "redis": {
+          "id": "",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e4a3d8e3-6e28-4c81-abb4-3fddf2083ca2",
+              "leftValue": "={{ $json.message.last() }}",
+              "rightValue": "={{ $('mensaje_usuario').item.json.mensaje_usuario }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -640,
+        -80
+      ],
+      "id": "af777dd1-1bf7-4b16-a728-85ed64430719",
+      "name": "If1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        40
+      ],
+      "id": "3c48e2b3-85ec-4510-a916-95d848a05664",
+      "name": "No Operation, do nothing3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1c52803b-5890-4424-8b1f-19a5759836d5",
+              "name": "response",
+              "value": "={{ $('Redis1').item.json.message.join() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -420,
+        -180
+      ],
+      "id": "cc9576b0-fc38-4254-89cd-e741d69dfec1",
+      "name": "mensajeUsuario"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{ $('Code1').item.json.processed_wa_id }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -180
+      ],
+      "id": "DEMO_REDIS_CREDENTIAL",
+      "name": "Redis2",
+      "credentials": {
+        "redis": {
+          "id": "",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kypBot",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -3920,
+        -180
+      ],
+      "id": "ca110cb8-fce9-4ace-97ad-3841062845da",
+      "name": "Webhook",
+      "webhookId": ""
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of $input.all()) {\n  // Obtener el wa_id original\n  const texto = $('Verifica quien escribe').first().json.mensaje_usuario_tel\n  const wa_id = texto.split(\"@\")[0];\n  const wa_id_2 = texto.split(\"@\")[0].slice(3);\n  // Agregar el wa_id procesado al JSON\n  item.json.processed_wa_id = wa_id;\n  item.json.processed_wa_id_2 = wa_id_2;\n}\n\n// Devolver el array modificado\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2420,
+        -180
+      ],
+      "id": "32041634-475f-49ae-a608-c7254615628a",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Webhook').item.json.body.server_url }}/message/sendText/{{ $('Webhook').item.json.body.data.instanceId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Webhook').item.json.body.apikey }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={   \n     \"number\": \"{{ $('Webhook').item.json.body.data.key.remoteJid }}\",  \n     \"text\": \"{{ $json.output }}\" \n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3100,
+        -680
+      ],
+      "id": "36b59223-e087-4423-b84c-0261e080ab47",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Webhook').item.json.body.server_url }}/message/sendText/{{ $('Webhook').item.json.body.data.instanceId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Webhook').item.json.body.apikey }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Webhook').item.json.body.data.key.remoteJid }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $('AI Agent').item.json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3040,
+        300
+      ],
+      "id": "cdc0ce16-d4ec-4352-94b9-241571177ebf",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{ $('Webhook').item.json.body.data.key.remoteJid}}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -2840,
+        -539.3691298151629
+      ],
+      "id": "DEMO_REDIS_CREDENTIAL",
+      "name": "Activar Bot",
+      "credentials": {
+        "redis": {
+          "id": "",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -2420,
+        -460
+      ],
+      "id": "436154aa-f460-4c83-a2a9-fa987a3223af",
+      "name": "No Operation, do nothing4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d24c82e0-3060-41d3-b44c-8400819506d1",
+              "leftValue": "={{ $('Webhook').item.json.body.data.key.fromMe }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3480,
+        -180
+      ],
+      "id": "25356569-da50-4201-8f4a-8b63c63beeae",
+      "name": "Verifica quien escribe",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "24d64e89-308e-42fa-875e-0cd399beec23",
+              "leftValue": "={{ $('Webhook').item.json.body.data.message.conversation }}",
+              "rightValue": "boton",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3180,
+        -420
+      ],
+      "id": "4063af81-4754-4ed6-b450-b2cf9510a34c",
+      "name": "Verifica palabra clave"
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "={{ $('Webhook').item.json.body.data.key.remoteJid }}",
+        "value": "blocked-bot",
+        "expire": true,
+        "ttl": 300
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -2840,
+        -340
+      ],
+      "id": "DEMO_REDIS_CREDENTIAL",
+      "name": "Bloquea al agente",
+      "credentials": {
+        "redis": {
+          "id": "",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "bot-state",
+        "key": "={{ $('Webhook').item.json.body.data.key.remoteJid }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -3120,
+        -80
+      ],
+      "id": "DEMO_REDIS_CREDENTIAL",
+      "name": "Verifica bloqueo",
+      "credentials": {
+        "redis": {
+          "id": "",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "bc6c809a-c794-432a-b3f9-ea80455cb7e5",
+              "leftValue": "={{ $json['bot-state'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2840,
+        -160
+      ],
+      "id": "292ee5b6-e2de-40af-b2bb-2f05c1a55b60",
+      "name": "Verifica el estado de la sesion",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "cuando el cliente escriba la palabra \"humano\" ejecuta esta tool",
+        "operation": "set",
+        "key": "={{ $('Webhook').item.json.body.data.key.remoteJid }}",
+        "value": "blocked-bot",
+        "expire": true,
+        "ttl": 300
+      },
+      "type": "n8n-nodes-base.redisTool",
+      "typeVersion": 1,
+      "position": [
+        2760,
+        520
+      ],
+      "id": "DEMO_REDIS_CREDENTIAL",
+      "name": "Redis3",
+      "credentials": {
+        "redis": {
+          "id": "",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Webhook').item.json.body.server_url }}/message/sendText/{{ $('Webhook').item.json.body.data.instanceId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $('Webhook').item.json.body.apikey }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Webhook').item.json.body.data.key.remoteJid }}"
+            },
+            {
+              "name": "text",
+              "value": "¡Hola! 💖\nGracias por escribirnos ✨ Somos Mayorista KyP, una distribuidora de ropa femenina pensada para que lleves lo mejor a tu negocio 💃\n🚛 ¡Hacemos envíos a todo el país! 📦 Así que estés donde estés, ¡la moda llega a tu puerta! 🛍️\nContanos, ¿Sos emprendedora o tenés tienda de ropa? 👗💼\nTe consultamos porque no realizamos ventas a particulares, solo por mayor💖"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3620,
+        100
+      ],
+      "id": "e9297b9b-ed9e-4cf3-a94c-a2f896754b66",
+      "name": "HTTP Request3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Filtro Mensaje Bienvenida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ContactosBot": {
+      "main": [
+        [
+          {
+            "node": "Filtro Clientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bienvenida": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Mensaje Bienvenida": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Clientes": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GOOGLE_SHEET_WELCOME_NAME": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "ContactosBot",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bloqueo de Spam (999 dias)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bloqueo de Spam (999 dias)": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Historial": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "mensaje_usuario": {
+      "main": [
+        [
+          {
+            "node": "Verifica quien escribe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Obtener Historial",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ContactosClientes": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ContactosNoClientes": {
+      "main": [
+        [
+          {
+            "node": "ContactosClientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PreguntasFrecuentes": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Bienvenida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing1": {
+      "main": [
+        []
+      ]
+    },
+    "PreguntasFrecuentes1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ContactosBotClientes": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "No hacer nada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No hacer nada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No hacer nada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No hacer nada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No hacer nada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No hacer nada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "mensajeUsuario",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "mensajeUsuario": {
+      "main": [
+        [
+          {
+            "node": "Redis2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "mensaje_usuario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "ContactosNoClientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica quien escribe": {
+      "main": [
+        [
+          {
+            "node": "Verifica palabra clave",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Verifica bloqueo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica palabra clave": {
+      "main": [
+        [
+          {
+            "node": "Activar Bot",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bloquea al agente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bloquea al agente": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica bloqueo": {
+      "main": [
+        [
+          {
+            "node": "Verifica el estado de la sesion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica el estado de la sesion": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis3": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Argentina/Buenos_Aires",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "DEMO_VERSION_ID",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "N8N_INSTANCE_ID"
+  },
+  "id": "DEMO_WORKFLOW_ID",
+  "tags": []
+}
